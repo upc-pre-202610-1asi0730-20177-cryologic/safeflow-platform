@@ -1,0 +1,14 @@
+bin/
+obj/
+
+.vs/
+.idea/
+temp_auto_push.bat
+
+*.user
+*.suo
+
+Debug/
+Release/
+.gitignore
+branch_structure.json
