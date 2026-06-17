@@ -9,3 +9,6 @@ obj/
 
 Debug/
 Release/
+
+# Configuration secrets
+appsettings.Development.json
