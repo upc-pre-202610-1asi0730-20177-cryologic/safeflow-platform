@@ -1,0 +1,6 @@
+@safeflow_backend_HostAddress = http://localhost:5115
+
+GET {{safeflow_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
