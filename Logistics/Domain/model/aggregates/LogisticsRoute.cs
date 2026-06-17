@@ -1,4 +1,4 @@
-﻿namespace SafeFlow.API.Logistics.Domain.Model.Aggregates;
+namespace SafeFlow.API.Logistics.Domain.Model.Aggregates;
 
 /// <summary>
 /// Represents a logistics route between origin and destination.
@@ -8,8 +8,8 @@ public class LogisticsRoute
     /// <summary>Primary key.</summary>
     public int Id { get; set; }
 
-    /// <summary>Unique route code (numeric).</summary>
-    public int RouteCode { get; set; }
+    /// <summary>Unique route code.</summary>
+    public string RouteCode { get; set; } = null!;
 
     /// <summary>URL-friendly identifier.</summary>
     public string Slug { get; set; } = null!;
