@@ -10,8 +10,7 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
     public async Task InvokeAsync(
         HttpContext context,
         IUserQueryService userQueryService,
-        ITokenService tokenService,
-        CancellationToken cancellationToken)
+        ITokenService tokenService)
     {
         var endpoint = context.GetEndpoint();
         if (endpoint == null)
@@ -50,7 +49,7 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
             return;
         }
 
-        var user = await userQueryService.Handle(new GetUserByIdQuery(userId.Value), cancellationToken);
+        var user = await userQueryService.Handle(new GetUserByIdQuery(userId.Value), context.RequestAborted);
         if (user == null)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
