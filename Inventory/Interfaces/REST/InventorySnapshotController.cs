@@ -4,12 +4,14 @@ using SafeFlow.API.Inventory.Application.Services;
 using SafeFlow.API.Inventory.Domain.Model.Queries;
 using SafeFlow.API.Inventory.Interfaces.REST.Transform;
 using SafeFlow.API.Logistics.Application.Services;
+using SafeFlow.API.Iam.Infrastructure.Pipeline.Middleware.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SafeFlow.API.Inventory.Interfaces.REST;
 
 [ApiController]
 [Route("api/inventory")]
+[Authorize]
 public class InventorySnapshotController(
     IInventoryQueryService inventoryQuery,
     ILogisticsQueryService logisticsQuery,

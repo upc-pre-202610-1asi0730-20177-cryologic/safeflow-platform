@@ -4,12 +4,14 @@ using SafeFlow.API.Alerts.Domain.Model.Commands;
 using SafeFlow.API.Alerts.Domain.Model.Queries;
 using SafeFlow.API.Alerts.Domain.Model.ValueObjects;
 using SafeFlow.API.Shared.Domain.Model;
+using SafeFlow.API.Iam.Infrastructure.Pipeline.Middleware.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SafeFlow.API.Alerts.Interfaces.REST;
 
 [ApiController]
 [Route("api/alerts")]
+[Authorize]
 public class AlertsController(IAlertQueryService queryService, IAlertCommandService commandService) : ControllerBase
 {
     [HttpGet("dashboard")]

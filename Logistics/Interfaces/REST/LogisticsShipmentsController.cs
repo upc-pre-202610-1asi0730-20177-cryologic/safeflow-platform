@@ -1,10 +1,11 @@
-﻿using SafeFlow.API.Inventory.Domain.Repositories;
+using SafeFlow.API.Inventory.Domain.Repositories;
 using SafeFlow.API.Logistics.Application.Errors;
 using SafeFlow.API.Logistics.Application.Services;
 using SafeFlow.API.Logistics.Domain.Model.Aggregates;
 using SafeFlow.API.Logistics.Domain.Repositories;
 using SafeFlow.API.Logistics.Interfaces.REST.Transform;
 using SafeFlow.API.Shared.Application.Patterns;
+using SafeFlow.API.Iam.Infrastructure.Pipeline.Middleware.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SafeFlow.API.Logistics.Interfaces.REST;
@@ -24,6 +25,7 @@ namespace SafeFlow.API.Logistics.Interfaces.REST;
 /// </remarks>
 [ApiController]
 [Route("api/logistics/shipments")]
+[Authorize]
 public class LogisticsShipmentsController(
     ILogisticsQueryService queryService,
     ILogisticsCommandService commandService,

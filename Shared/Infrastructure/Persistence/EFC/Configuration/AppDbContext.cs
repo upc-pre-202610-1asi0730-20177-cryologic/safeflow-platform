@@ -2,6 +2,7 @@ using SafeFlow.API.Alerts.Domain.Model.Aggregates;
 using SafeFlow.API.Alerts.Domain.Model.ValueObjects;
 using SafeFlow.API.EnvironmentalMonitoring.Domain.Model.Aggregates;
 using SafeFlow.API.EnvironmentalMonitoring.Domain.Model.ValueObjects;
+using SafeFlow.API.Iam.Domain.Model.Aggregates;
 using SafeFlow.API.Inventory.Domain.Model.Aggregates;
 using SafeFlow.API.Inventory.Domain.Model.ValueObjects;
 using SafeFlow.API.Logistics.Domain.Model.Aggregates;
@@ -26,6 +27,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<TemperatureReading> TemperatureReadings => Set<TemperatureReading>();
     public DbSet<ReportCatalogItem> ReportCatalogItems => Set<ReportCatalogItem>();
     public DbSet<ReportRun> ReportRuns => Set<ReportRun>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {
@@ -157,6 +159,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(x => x.RunCode).IsUnique();
             entity.Property(x => x.CatalogCode).HasMaxLength(32).IsRequired();
             entity.Property(x => x.Status).HasMaxLength(16).IsRequired();
+        });
+
+        builder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id);
+            entity.Property(u => u.Id).ValueGeneratedOnAdd();
+            entity.Property(u => u.Username).HasMaxLength(256).IsRequired();
+            entity.HasIndex(u => u.Username).IsUnique();
+            entity.Property(u => u.PasswordHash).HasMaxLength(512).IsRequired();
         });
 
         builder.UseSnakeCaseNamingConvention();
