@@ -1,6 +1,7 @@
-﻿using SafeFlow.API.Logistics.Application.Errors;
+using SafeFlow.API.Logistics.Application.Errors;
 using SafeFlow.API.Logistics.Application.Services;
 using SafeFlow.API.Logistics.Interfaces.REST.Transform;
+using SafeFlow.API.Iam.Infrastructure.Pipeline.Middleware.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SafeFlow.API.Logistics.Interfaces.REST;
@@ -18,6 +19,7 @@ namespace SafeFlow.API.Logistics.Interfaces.REST;
 /// </remarks>
 [ApiController]
 [Route("api/logistics/destinos")]
+[Authorize]
 public class LogisticsDestinosController(
     ILogisticsQueryService queryService,
     ILogisticsCommandService commandService) : ControllerBase

@@ -4,12 +4,14 @@ using SafeFlow.API.Inventory.Domain.Model.Commands;
 using SafeFlow.API.Inventory.Domain.Model.Queries;
 using SafeFlow.API.Inventory.Domain.Model.ValueObjects;
 using SafeFlow.API.Inventory.Interfaces.REST.Transform;
+using SafeFlow.API.Iam.Infrastructure.Pipeline.Middleware.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SafeFlow.API.Inventory.Interfaces.REST;
 
 [ApiController]
 [Route("api/inventory/items")]
+[Authorize]
 public class InventoryItemsController(
     IInventoryQueryService queryService,
     IInventoryCommandService commandService) : ControllerBase

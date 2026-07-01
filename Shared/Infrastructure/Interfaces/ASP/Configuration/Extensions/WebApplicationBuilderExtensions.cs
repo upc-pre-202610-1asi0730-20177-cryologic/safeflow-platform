@@ -9,6 +9,15 @@ using SafeFlow.API.EnvironmentalMonitoring.Application.Internal;
 using SafeFlow.API.EnvironmentalMonitoring.Application.Services;
 using SafeFlow.API.EnvironmentalMonitoring.Domain.Repositories;
 using SafeFlow.API.EnvironmentalMonitoring.Infrastructure.Persistence.EFC.Repositories;
+using SafeFlow.API.Iam.Application.Internal.CommandServices;
+using SafeFlow.API.Iam.Application.Internal.QueryServices;
+using SafeFlow.API.Iam.Application.Outbound;
+using SafeFlow.API.Iam.Application.Services;
+using SafeFlow.API.Iam.Domain.Repositories;
+using SafeFlow.API.Iam.Infrastructure.Hashing.Services;
+using SafeFlow.API.Iam.Infrastructure.Persistence.EFC.Repositories;
+using SafeFlow.API.Iam.Infrastructure.Tokens.Jwt.Configuration;
+using SafeFlow.API.Iam.Infrastructure.Tokens.Jwt.Services;
 using SafeFlow.API.Inventory.Application.Internal.CommandServices;
 using SafeFlow.API.Inventory.Application.Internal.QueryServices;
 using SafeFlow.API.Inventory.Application.Services;
@@ -65,6 +74,13 @@ public static class WebApplicationBuilderExtensions
 
         builder.Services.AddScoped<IAnalyticsQueryService, AnalyticsQueryService>();
 
+        builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IUserCommandService, UserCommandService>();
+        builder.Services.AddScoped<IUserQueryService, UserQueryService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IHashingService, HashingService>();
+
         builder.Services.AddControllers(options =>
             options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 
@@ -73,15 +89,23 @@ public static class WebApplicationBuilderExtensions
 
         builder.Services.AddCors(options =>
         {
+            var extraOrigins = builder.Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>() ?? [];
+
             options.AddPolicy("SafeFlowFrontend", policy =>
             {
-                policy.SetIsOriginAllowed(static origin =>
+                policy.SetIsOriginAllowed(origin =>
                     {
                         if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                             return false;
                         if (uri.Scheme is not "http" and not "https")
                             return false;
-                        return uri.Host is "localhost" or "127.0.0.1";
+                        if (uri.Host is "localhost" or "127.0.0.1")
+                            return true;
+                        if (uri.Host.EndsWith(".netlify.app", StringComparison.OrdinalIgnoreCase))
+                            return true;
+                        return extraOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase);
                     })
                     .AllowAnyHeader()
                     .AllowAnyMethod();

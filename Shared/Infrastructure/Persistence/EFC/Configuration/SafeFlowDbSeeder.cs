@@ -18,6 +18,21 @@ public static class SafeFlowDbSeeder
 
         await EnsureDatabaseExistsAsync(connectionString, ct);
         await context.Database.EnsureCreatedAsync(ct);
+        await EnsureUsersTableAsync(context, ct);
+    }
+
+    private static async Task EnsureUsersTableAsync(AppDbContext context, CancellationToken ct)
+    {
+        await context.Database.ExecuteSqlRawAsync(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(256) NOT NULL,
+                password_hash VARCHAR(512) NOT NULL,
+                UNIQUE INDEX ix_users_username (username)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """,
+            cancellationToken: ct);
     }
 
     private static async Task EnsureDatabaseExistsAsync(string connectionString, CancellationToken ct)

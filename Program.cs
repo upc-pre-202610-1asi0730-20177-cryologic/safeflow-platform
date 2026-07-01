@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using SafeFlow.API.Iam.Infrastructure.Pipeline.Middleware.Extensions;
 using SafeFlow.API.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using SafeFlow.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 
@@ -20,6 +21,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("SafeFlowFrontend");
+app.UseRequestAuthorization();
 if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 app.MapControllers();
