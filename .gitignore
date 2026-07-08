@@ -5,6 +5,7 @@ obj/
 .idea/
 
 *.user
+temp_auto_push.bat
 *.suo
 
 Debug/
@@ -12,3 +13,5 @@ Release/
 
 # Configuration secrets
 appsettings.Development.json
+.gitignore
+branch_structure.json
