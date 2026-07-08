@@ -37,6 +37,7 @@ using SafeFlow.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using SafeFlow.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SafeFlow.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace SafeFlow.API.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
@@ -85,7 +86,39 @@ public static class WebApplicationBuilderExtensions
             options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "safeflow-backend",
+                Version = "1.0"
+            });
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Paste the JWT token from sign-in (without the Bearer prefix)."
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
 
         builder.Services.AddCors(options =>
         {
