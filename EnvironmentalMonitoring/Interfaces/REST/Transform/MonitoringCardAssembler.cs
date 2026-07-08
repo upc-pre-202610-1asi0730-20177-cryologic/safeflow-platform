@@ -2,6 +2,7 @@ using SafeFlow.API.EnvironmentalMonitoring.Application.Services;
 using SafeFlow.API.EnvironmentalMonitoring.Domain.Model.Aggregates;
 using SafeFlow.API.Inventory.Domain.Model.Aggregates;
 using SafeFlow.API.Logistics.Domain.Model.Aggregates;
+using SafeFlow.API.Logistics.Interfaces.REST.Transform;
 using SafeFlow.API.Shared.Domain.Model;
 using SafeFlow.API.Shared.Domain.Services;
 
@@ -105,8 +106,7 @@ public static class MonitoringCardAssembler
         byRoute.TryGetValue(dispatch.RouteCode, out var route);
         byDriver.TryGetValue(dispatch.DriverCode ?? string.Empty, out var driver);
 
-        var routeFrom = LocalizedText.FromRaw(route?.OriginJson);
-        var routeTo = LocalizedText.FromRaw(route?.DestinationJson);
+        var (routeFrom, routeTo) = LogisticsDispatchPlaceResolver.ResolveRoutePlaces(dispatch, route);
         var productName = LocalizedText.FromRaw(product.Name);
         var placementKind = dispatch.PlacementMode == "almacen" ? "warehouse" : "route";
         var personLoc = driver != null ? LocalizedText.FromRaw(driver.NameJson).ToApiObject() : null;

@@ -1,4 +1,4 @@
-﻿using SafeFlow.API.Inventory.Domain.Model.Aggregates;
+using SafeFlow.API.Inventory.Domain.Model.Aggregates;
 using SafeFlow.API.Logistics.Domain.Model.Aggregates;
 using SafeFlow.API.Shared.Domain.Model;
 
@@ -25,7 +25,7 @@ public static class LogisticsShipmentAssembler
     /// - Carrier name prefers the assigned primary driver over the carrier entity.
     /// - Status is mapped to UI representation: "en_transito" → "transit", "entregado" → "delivered", else "pending".
     /// - Thermal risk is determined by the "en_riesgo" status (maps to "risk" or "safe").
-    /// - Route origin/destination sourced from route aggregate; current place derived from dispatch status.
+    /// - Route origin/destination prefer dispatch TextsJson (per-shipment choice), then route aggregate.
     /// </remarks>
     /// <param name="dispatches">Collection of logistics dispatches (primary entity for shipment).</param>
     /// <param name="carriers">Collection of carriers for vehicle type and name resolution.</param>
@@ -91,8 +91,7 @@ public static class LogisticsShipmentAssembler
                 _ => "pending"
             };
             var thermal = d.ThermalStatus == "en_riesgo" ? "risk" : "safe";
-            var routeFrom = LocalizedText.FromRaw(route?.OriginJson);
-            var routeTo = LocalizedText.FromRaw(route?.DestinationJson);
+            var (routeFrom, routeTo) = LogisticsDispatchPlaceResolver.ResolveRoutePlaces(d, route);
 
             return new
             {
